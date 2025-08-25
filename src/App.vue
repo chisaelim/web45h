@@ -1,11 +1,9 @@
-<script setup></script>
-
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
-</template>
+  <router-view name="navbar"></router-view>
+  <router-view name="mainSideBar"></router-view>
+  <router-view></router-view>
+  <router-view name="controlSideBar"></router-view>
+  <router-view name="footer"></router-view>
 
-<style scoped></style>
+  <div id="sidebar-overlay"></div>
+</template>
