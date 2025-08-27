@@ -98,6 +98,7 @@ async function login() {
       expiresInMins: 30, // optional, defaults to 60
     });
 
+    localStorage.setItem("refreshToken", result.data.refreshToken);
     store.commit("refreshProfile", result.data);
     router.replace({ name: "dashboard" });
   } catch (error) {

@@ -8,6 +8,8 @@ import ControlSidebar from '@/components/includes/ControlSidebar.vue'
 import Footer from '@/components/includes/Footer.vue'
 import NotFound from '@/components/NotFound.vue'
 import Dashboard from '@/components/pages/Dashboard.vue'
+import { useStore } from 'vuex'
+import axios from 'axios';
 
 const includes = {
   navbar: Navbar,
@@ -50,5 +52,34 @@ const router = createRouter({
     component: NotFound
   }],
 })
+
+
+
+router.beforeEach(async (to, from) => {
+  try {
+    const { state: { profile } } = useStore();
+    let accessToken = profile.accessToken || null;
+    if (!profile) {
+      const refreshResult = await axios.post('https://dummyjson.com/auth/refresh', {
+        refreshToken: localStorage.getItem('refreshToken'),
+        expiresInMins: 30,
+      });
+      localStorage.setItem('refreshToken', refreshResult.data.refreshToken);
+      accessToken = refreshResult.data.accessToken
+    }
+
+    console.log(1232)
+    const result = await axios.get('https://dummyjson.com/auth/me', {
+      headers: {
+        'Authorization': 'Bearer ' + accessToken
+      }
+    });
+
+    console.log(result.data)
+  } catch (error) {
+    console.log(error)
+
+  }
+});
 
 export default router
