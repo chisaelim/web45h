@@ -57,9 +57,9 @@ const router = createRouter({
 
 router.beforeEach(async (to, from) => {
   try {
-    const store = useStore();
+    const store = useStore(); // null
     let accessToken = store.state.profile?.accessToken || null;
-    if (!profile) {
+    if (!store.state.profile) {
       const refreshResult = await axios.post('https://dummyjson.com/auth/refresh', {
         refreshToken: localStorage.getItem('refreshToken'),
         expiresInMins: 30,
@@ -67,13 +67,15 @@ router.beforeEach(async (to, from) => {
       localStorage.setItem('refreshToken', refreshResult.data.refreshToken);
       accessToken = refreshResult.data.accessToken
     }
-
+    console.log(store.state.profile)
     const result = await axios.get('https://dummyjson.com/auth/me', {
       headers: {
         'Authorization': 'Bearer ' + accessToken
       }
     });
     store.commit('refreshProfile', result.data)
+    console.log(store.state.profile)
+
   } catch (error) {
     console.log(error)
 
