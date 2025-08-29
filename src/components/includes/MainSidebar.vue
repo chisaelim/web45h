@@ -65,6 +65,22 @@
               </p>
             </router-link>
           </li>
+
+          <li class="nav-item">
+            <a
+              role="button"
+              @click="logout"
+              :to="{ name: 'cart' }"
+              class="nav-link bg-white"
+              active-class="active"
+            >
+              <i class="nav-icon fas fa-sign-out-alt text-danger"></i>
+              <p>
+                Log Out
+                <!-- <span class="right badge badge-danger">New</span> -->
+              </p>
+            </a>
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -72,3 +88,27 @@
     <!-- /.sidebar -->
   </aside>
 </template>
+
+<script setup>
+import { useRouter } from "vue-router";
+import Swal from "sweetalert2";
+
+const router = useRouter();
+
+function logout() {
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, Logout!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      localStorage.removeItem("refreshToken");
+      return router.replace({ name: "login" });
+    }
+  });
+}
+</script>
