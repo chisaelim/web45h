@@ -54,31 +54,37 @@ const router = createRouter({
 })
 
 
+const routes_without_login = ['login'];
 
 router.beforeEach(async (to, from) => {
+  const store = useStore(); // null
   try {
-    const store = useStore(); // null
-    let accessToken = store.state.profile?.accessToken || null;
-    if (!store.state.profile) {
-      const refreshResult = await axios.post('https://dummyjson.com/auth/refresh', {
-        refreshToken: localStorage.getItem('refreshToken'),
-        expiresInMins: 30,
-      });
-      localStorage.setItem('refreshToken', refreshResult.data.refreshToken);
-      accessToken = refreshResult.data.accessToken
-    }
-    console.log(store.state.profile)
+    const refreshResult = await axios.post('https://dummyjson.com/auth/refresh', {
+      refreshToken: localStorage.getItem('refreshToken'),
+      expiresInMins: 30,
+    });
+
+    const { refreshToken, accessToken } = refreshResult.data
+
     const result = await axios.get('https://dummyjson.com/auth/me', {
       headers: {
         'Authorization': 'Bearer ' + accessToken
       }
     });
+    localStorage.setItem('refreshToken', refreshToken);
     store.commit('refreshProfile', result.data)
-    console.log(store.state.profile)
-
   } catch (error) {
-    console.log(error)
+    localStorage.removeItem('refreshToken');
+    store.commit('refreshProfile', null);
+  }
 
+  if ((!store.state.profile && to.name !== 'login')) {
+    return { name: 'login' };
+  }
+  if (store.state.profile) {
+    if (to.name === 'login') {
+      return { name: 'dashboard' };
+    }
   }
 });
 
