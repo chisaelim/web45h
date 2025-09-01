@@ -29,10 +29,7 @@
           <!-- title row -->
           <div class="row">
             <div class="col-12">
-              <h4>
-                <i class="fas fa-globe"></i> AdminLTE, Inc.
-                <small class="float-right">Date: 2/10/2014</small>
-              </h4>
+              <h4><i class="fas fa-globe"></i> Current Cart</h4>
             </div>
             <!-- /.col -->
           </div>
@@ -44,41 +41,24 @@
               <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th>Qty</th>
+                    <th>#</th>
                     <th>Product</th>
-                    <th>Serial #</th>
-                    <th>Description</th>
-                    <th>Subtotal</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>total</th>
+                    <th>discountPercentage</th>
+                    <th>discountedTotal</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>Call of Duty</td>
-                    <td>455-981-221</td>
-                    <td>El snort testosterone trophy driving gloves handsome</td>
-                    <td>$64.50</td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>Need for Speed IV</td>
-                    <td>247-925-726</td>
-                    <td>Wes Anderson umami biodiesel</td>
-                    <td>$50.00</td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>Monsters DVD</td>
-                    <td>735-845-642</td>
-                    <td>Terry Richardson helvetica tousled street art master</td>
-                    <td>$10.70</td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>Grown Ups Blue Ray</td>
-                    <td>422-568-642</td>
-                    <td>Tousled lomo letterpress</td>
-                    <td>$25.99</td>
+                  <tr v-for="product in cart?.products" :key="product.id">
+                    <td><img style="width: 50px" :src="product.thumbnail" /></td>
+                    <td>{{ product.title }}</td>
+                    <td>{{ product.quantity }}</td>
+                    <td>{{ product.price }}</td>
+                    <td>{{ product.total }}$</td>
+                    <td>{{ product.discountPercentage }}%</td>
+                    <td>{{ product.discountedTotal }}$</td>
                   </tr>
                 </tbody>
               </table>
@@ -152,7 +132,7 @@ import { useStore } from "vuex";
 const store = useStore();
 const profile = computed(() => store.state.profile);
 
-const cartInfo = ref(null);
+const cart = ref(null);
 
 onMounted(async () => {
   LoadingModal();
@@ -163,7 +143,7 @@ onMounted(async () => {
 async function fetchCartItems() {
   try {
     const response = await getCartItems(profile.value.id);
-    cartInfo.value = response.data;
+    cart.value = response.data;
   } catch (error) {
     throw error;
   }
