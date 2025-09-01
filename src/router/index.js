@@ -39,7 +39,17 @@ const router = createRouter({
       default: Product,
       ...includes
     }
-  }, {
+  },
+  {
+    path: '/product/category/:category_name',
+    name: 'product-category',
+    components: {
+      default: Product,
+      ...includes
+    }
+  },
+
+  {
     path: '/cart',
     name: 'cart',
     components: {

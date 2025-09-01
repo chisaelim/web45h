@@ -43,17 +43,31 @@
 
                 <ul class="list-group list-group-unbordered mb-3">
                   <li class="list-group-item">
-                    <b>Followers</b> <a class="float-right">1,322</a>
+                    <b>Price</b> <a class="float-right">{{ p.price }}$</a>
                   </li>
                   <li class="list-group-item">
-                    <b>Following</b> <a class="float-right">543</a>
+                    <b>Discount</b> <a class="float-right">{{ p.discountPercentage }}</a>
                   </li>
                   <li class="list-group-item">
-                    <b>Friends</b> <a class="float-right">13,287</a>
+                    <b>Category</b>
+                    <router-link
+                      :to="{
+                        name: 'product-category',
+                        params: { category_name: p.category },
+                      }"
+                      class="float-right"
+                    >
+                      {{ p.category }}
+                    </router-link>
+                  </li>
+                  <li class="list-group-item">
+                    <b>{{ p.availabilityStatus }}</b>
                   </li>
                 </ul>
-
-                <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
+                <div class="d-flex justify-content-between">
+                  <a href="#" class="btn btn-primary"><b>See More...</b></a>
+                  <a href="#" class="btn btn-outline-success"><b>Add to Cart</b></a>
+                </div>
               </div>
               <!-- /.card-body -->
             </div>
@@ -68,22 +82,50 @@
 </template>
 
 <script setup>
-import { getAllProducts } from "@/api/product-api";
-import { onBeforeMount, onMounted, ref } from "vue";
+import { getAllProducts, getProductsByCategory } from "@/api/product-api";
+import { onBeforeMount, onMounted, ref, watch } from "vue";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
+console.log(route);
 
 const products = ref([]);
 
 onBeforeMount(() => {
-  console.log(products.value);
-  console.log("Product onBeforeMount");
+  // console.log(products.value);
+  // console.log("Product onBeforeMount");
 });
 
-onMounted(async () => {
-  try {
-    const productResult = await getAllProducts();
-    products.value = productResult.data.products;
-  } catch (error) {
-    console.error("Error fetching products:", error);
-  }
-});
+const x = ref(0);
+watch(
+  () => route.params.category_name,
+  async function (nv, ov) {
+    try {
+      let productResult = null;
+      if (route.name === "product") {
+        productResult = await getAllProducts();
+      } else {
+        productResult = await getProductsByCategory(route.params.category_name);
+      }
+      products.value = productResult.data.products;
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  },
+  { immediate: true }
+);
+
+// onMounted(async () => {
+//   try {
+//     let productResult = null;
+//     if (route.name === "product") {
+//       productResult = await getAllProducts();
+//     } else {
+//       productResult = await getProductsByCategory(route.params.category_name);
+//     }
+//     products.value = productResult.data.products;
+//   } catch (error) {
+//     console.error("Error fetching products:", error);
+//   }
+// });
 </script>
