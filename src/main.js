@@ -2,11 +2,19 @@ import 'admin-lte/plugins/jquery/jquery.min.js'
 import 'admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js'
 import 'admin-lte/dist/js/adminlte.min.js'
 
+
+import Swal from 'sweetalert2';
+window.Swal = window.$swal = Swal;
+
 import axios from "axios";
 window.axios = axios;
 
-// import Swal from 'sweetalert2';
-// window.Swal = Swal;
+import { LoadingModal, CloseModal, ErrorModal, MessageModal } from './functions/swal';
+window.LoadingModal = LoadingModal;
+window.CloseModal = CloseModal;
+window.ErrorModal = ErrorModal;
+window.MessageModal = MessageModal;
+
 
 import { createApp } from 'vue'
 import App from './App.vue'

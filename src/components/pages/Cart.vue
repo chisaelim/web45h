@@ -25,67 +25,117 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
-        <div class="row">
-          <div class="col-lg-6">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-
-                <p class="card-text">
-                  Some quick example text to build on the card title and make up the bulk
-                  of the card's content.
-                </p>
-
-                <a href="#" class="card-link">Card link</a>
-                <a href="#" class="card-link">Another link</a>
-              </div>
+        <div class="invoice p-3 mb-3">
+          <!-- title row -->
+          <div class="row">
+            <div class="col-12">
+              <h4>
+                <i class="fas fa-globe"></i> AdminLTE, Inc.
+                <small class="float-right">Date: 2/10/2014</small>
+              </h4>
             </div>
-
-            <div class="card card-primary card-outline">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-
-                <p class="card-text">
-                  Some quick example text to build on the card title and make up the bulk
-                  of the card's content.
-                </p>
-                <a href="#" class="card-link">Card link</a>
-                <a href="#" class="card-link">Another link</a>
-              </div>
-            </div>
-            <!-- /.card -->
+            <!-- /.col -->
           </div>
-          <!-- /.col-md-6 -->
-          <div class="col-lg-6">
-            <div class="card">
-              <div class="card-header">
-                <h5 class="m-0">Featured</h5>
-              </div>
-              <div class="card-body">
-                <h6 class="card-title">Special title treatment</h6>
+          <!-- info row -->
 
-                <p class="card-text">
-                  With supporting text below as a natural lead-in to additional content.
-                </p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
+          <!-- Table row -->
+          <div class="row">
+            <div class="col-12 table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Qty</th>
+                    <th>Product</th>
+                    <th>Serial #</th>
+                    <th>Description</th>
+                    <th>Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>Call of Duty</td>
+                    <td>455-981-221</td>
+                    <td>El snort testosterone trophy driving gloves handsome</td>
+                    <td>$64.50</td>
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>Need for Speed IV</td>
+                    <td>247-925-726</td>
+                    <td>Wes Anderson umami biodiesel</td>
+                    <td>$50.00</td>
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>Monsters DVD</td>
+                    <td>735-845-642</td>
+                    <td>Terry Richardson helvetica tousled street art master</td>
+                    <td>$10.70</td>
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>Grown Ups Blue Ray</td>
+                    <td>422-568-642</td>
+                    <td>Tousled lomo letterpress</td>
+                    <td>$25.99</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+
+          <div class="row">
+            <!-- accepted payments column -->
+            <div class="col-6"></div>
+            <!-- /.col -->
+            <div class="col-6">
+              <p class="lead">Amount Due 2/22/2014</p>
+
+              <div class="table-responsive">
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <th style="width: 50%">Subtotal:</th>
+                      <td>$250.30</td>
+                    </tr>
+                    <tr>
+                      <th>Tax (9.3%)</th>
+                      <td>$10.34</td>
+                    </tr>
+                    <tr>
+                      <th>Shipping:</th>
+                      <td>$5.80</td>
+                    </tr>
+                    <tr>
+                      <th>Total:</th>
+                      <td>$265.24</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
 
-            <div class="card card-primary card-outline">
-              <div class="card-header">
-                <h5 class="m-0">Featured</h5>
-              </div>
-              <div class="card-body">
-                <h6 class="card-title">Special title treatment</h6>
-
-                <p class="card-text">
-                  With supporting text below as a natural lead-in to additional content.
-                </p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
+          <!-- this row will not appear when printing -->
+          <div class="row no-print">
+            <div class="col-12">
+              <button type="button" class="btn btn-success float-right">
+                <i class="far fa-credit-card"></i> Submit Payment
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary float-right"
+                style="margin-right: 5px"
+              >
+                <i class="fas fa-download"></i> Generate PDF
+              </button>
             </div>
           </div>
-          <!-- /.col-md-6 -->
         </div>
         <!-- /.row -->
       </div>
@@ -94,3 +144,28 @@
     <!-- /.content -->
   </div>
 </template>
+
+<script setup>
+import { getCartItems } from "@/api/cart-api";
+import { onMounted, computed, ref } from "vue";
+import { useStore } from "vuex";
+const store = useStore();
+const profile = computed(() => store.state.profile);
+
+const cartInfo = ref(null);
+
+onMounted(async () => {
+  LoadingModal();
+  await fetchCartItems();
+  CloseModal();
+});
+
+async function fetchCartItems() {
+  try {
+    const response = await getCartItems(profile.value.id);
+    cartInfo.value = response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+</script>

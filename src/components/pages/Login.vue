@@ -100,7 +100,14 @@ async function login() {
 
     localStorage.setItem("refreshToken", result.data.refreshToken);
     store.commit("refreshProfile", result.data);
-    router.replace({ name: "dashboard" });
+
+    const path = localStorage.getItem("Requested-Path");
+    if (path) {
+      router.replace({ path: path });
+      localStorage.removeItem("Requested-Path");
+    } else {
+      router.replace({ name: "dashboard" });
+    }
   } catch (error) {
     message.value = error.response.data.message;
   }

@@ -88,7 +88,11 @@ router.beforeEach(async (to, from) => {
     store.commit('refreshProfile', null);
   }
 
+  // /product => to.name => (product)
   if ((!store.state.profile && to.name !== 'login')) {
+
+    localStorage.setItem('Requested-Path', to.path);
+
     return { name: 'login' };
   }
   if (store.state.profile) {
